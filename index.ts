@@ -11,26 +11,29 @@ import {
   yellow,
 } from "https://deno.land/std@0.54.0/fmt/colors.ts";
 
-import { Application, send, Router } from "https://deno.land/x/oak@v5.0.0/mod.ts";
+import {
+  Application,
+  send,
+  Router,
+} from "https://deno.land/x/oak@v5.0.0/mod.ts";
 
-import { handleSocket } from './socket.ts'
+import { handleSocket } from "./socket.ts";
 
 const app = new Application();
 const router = new Router();
 
 router
-// .get('/editor/:docId', async (ctx) => {
-//   ctx.response.body = "Hello World!"
-// })
+  // .get('/editor/:docId', async (ctx) => {
+  //   ctx.response.body = "Hello World!"
+  // })
 
-.get('/', async (ctx) => {
-  await send(ctx, ctx.request.url.pathname, {
-    root: `${Deno.cwd()}/public`,
-    index: "index.html",
-  });
-})
-.get('/ws', handleSocket);
-
+  .get("/", async (ctx) => {
+    await send(ctx, ctx.request.url.pathname, {
+      root: `${Deno.cwd()}/public`,
+      index: "index.html",
+    });
+  })
+  .get("/ws", handleSocket);
 
 // Logger
 app.use(async (ctx, next) => {
@@ -40,18 +43,17 @@ app.use(async (ctx, next) => {
     `${green(ctx.request.method)} ${cyan(ctx.request.url.pathname)} - ${
       bold(
         String(rt),
-        )
-      }`,
-      );
-    });
-    
+      )
+    }`,
+  );
+});
+
 app.use(async (ctx, next) => {
-    const start = Date.now();
-    await next();
-    const ms = Date.now() - start;
-    ctx.response.headers.set("X-Response-Time", `${ms}ms`);
-  });
-    
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  ctx.response.headers.set("X-Response-Time", `${ms}ms`);
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());
@@ -61,7 +63,7 @@ app.use(async (context) => {
     root: `${Deno.cwd()}/public`,
     index: "editor.html",
   });
-})
+});
 
 app.addEventListener("listen", ({ hostname, port }) => {
   console.log(
@@ -69,19 +71,12 @@ app.addEventListener("listen", ({ hostname, port }) => {
   );
 });
 
-
-
-await app.listen({ hostname: 'localhost', port: 3000 });
+await app.listen({ hostname: "localhost", port: 3000 });
 console.log(bold("Finished."));
-
 
 // import { Application, send } from "https://deno.land/x/oak@v5.0.0/mod.ts";
 
-
-
-
 // // await app.listen({ port: 8000 });
-
 
 // const app = new Application();
 // console.log('hello')

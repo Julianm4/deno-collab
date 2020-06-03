@@ -6,7 +6,6 @@ for await (const event of watcher) {
 
 // import { watch } from "https://deno.land/x/watch/mod.ts";
 
-
 // for await (const changes of watch("newFile.txt")) {
 //   console.log(changes.added);
 //   console.log(changes.modified);
