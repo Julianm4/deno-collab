@@ -1,0 +1,17 @@
+#doc {
+	background: #eee;
+	width: 90vw;
+	height: 40vh;
+	border: none;
+	border-radius: 7px;
+	padding: 10px;
+}
+textarea {
+	background:#333;
+	color: white;
+	width: 90vw;
+	height: 40vh;
+	border: none;
+	border-radius: 7px;
+	padding: 10px;
+}
