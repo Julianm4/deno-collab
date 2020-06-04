@@ -1,4 +1,7 @@
-document.addEventListener("DOMContentLoaded", (event) => {
+// const { getDadJokes } = require('./dadJokes')
+document.addEventListener("DOMContentLoaded", async (event) => {
+  // const jokes = await getDadJokes(5)
+  // console.dir(jokes)
   let currentSelection = [0, 0];
 
   // Connect websocket
@@ -22,11 +25,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   // Get elements
 
-  const doc = document.getElementById("doc");
+  const preview = document.getElementById("preview");
   const doc2 = document.getElementById("doc2");
   const parseBtn = document.getElementById("parse");
-  doc.contentEditable = true;
-  doc.focus();
+  preview.contentEditable = true;
+  preview.focus();
 
   function onMoveCursor(e) {
     console.dir(e);
@@ -36,7 +39,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   const formatMessage = (chars, pos, type) => {
-    // debugger
     return JSON.stringify({ chars, pos, type });
   };
 
@@ -67,7 +69,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const parse = () => {
     const source = doc2.value;
-    doc.innerHTML = marked(source);
+    preview.innerHTML = marked(source);
   };
 
   function onChange(e) {
@@ -105,20 +107,32 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
   }
 
+  const getDinosaurs = async (urls) =>
+    await Promise.allSettled(urls.map((url) => globalThis.fetch(url)));
+
   // Markdown parser config
   // Override function
   const tokenizer = {
     codespan(src) {
-      const match = src.match(/(\/dino)\ \[\w+\]+/);
+      const match = src.match(/(\/dino)\ /);
+      //   const match = src.match(/(\/dino)\ \[\w+\]+/);
       // const match = src.match(/\$+([^\$\n]+?)\$+/);
       if (match) {
+        const urls = [
+          "https://source.unsplash.com/random",
+          "https://source.unsplash.com/random",
+        ];
+        // const urls = ['https://cdn2.vectorstock.com/i/1000x1000/61/51/cartoon-cute-dinosaur-vector-16996151.jpg', 'https://cdn2.vectorstock.com/i/thumbs/56/96/cute-dinosaur-cartoon-vector-1375696.jpg']
+        // return getDinosaurs(urls).then(res => {
+        // 	console.dir(res);
+        // const output = res.map(img => )
         return {
           type: "codespan",
           raw: match[0],
           // text: match[1].trim()
-          text: match[1].trim(),
+          text: `<script>alert('hello')</script>`,
         };
-        console.dir(match);
+        // })
       }
 
       // return false to use original codespan tokenizer
@@ -130,8 +144,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   // Add event listeners
 
-  doc.addEventListener("input", onChange);
-  doc.addEventListener("click", onMoveCursor);
+  preview.addEventListener("input", onChange);
+  preview.addEventListener("click", onMoveCursor);
   doc2.addEventListener("input", onChange);
   doc2.addEventListener("click", onMoveCursor);
   // doc2.addEventListener('change', onChange);
